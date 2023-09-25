@@ -68,9 +68,12 @@ ebmvar_name = ['temp change (GCM)',
 #               'temp albedo (rev) (surface)',
 #               'temp albedo (rev) (non-surface)'
                ]
-ebmvarlpw_name = []
+ebmvarlpw_name, ebmvarllpw_name, ebmvarhnlpw_name, ebmvarhslpw_name = [], [], [], []
 for i in ebmvar_name:
     ebmvarlpw_name.append('lpw '+i)
+    ebmvarllpw_name.append('llpw '+i)
+    ebmvarhnlpw_name.append('hnlpw '+i)
+    ebmvarhslpw_name.append('hslpw '+i)
 var_plots = ['ebm0', 'ebm1', 'ebm2', 'ebm3', 'ebm4', 'ebm5', 'ebm6', 'ebm7', 'ebm8']
 sim_dict, var_dict = {}, {}
 sim_dict2, var_dict2, ebm_dict = {}, {}, {}
