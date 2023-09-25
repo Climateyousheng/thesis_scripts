@@ -54,8 +54,6 @@ dervar_2d_unit = ['[0-1]', '[0-1]', '[K]', '[K]', '[0-1]', 'W/m2']
 # Following ebm variables represent the estimation of the contributions of various
 # components to the temperature change, the last three components (reverse) is 
 # currently not in use. We may need to add the clear sky components later.
-# The first nice components are saved in the final output dict, however,
-# only 0, 1, 3, 4, 7, 8 is accounted for in the plots.
 ebmvar_name = ['temp change (GCM)',
                'temp change (EBM)',
                'temp albedo',
@@ -94,11 +92,11 @@ sim_dict2, var_dict2, ebm_dict = {}, {}, {}
 # 10. netSWsrf = solar_mm_s3_srf            # Net SW Rad. Surface
 # ===============================================================================
 lsm_low_loc, lsm_high_loc, sim_loc = [], [], []
-#for i in range(nsims):
-#    lsm_low_loc.append('/home/bridge/nd20983/paleogeogs/LOW_RES/'+geo_stages[i]+'.nc')
-#    lsm_high_loc.append('/home/bridge/nd20983/paleogeogs/'+geo_stages[i]+'.nc')
-#    sim_loc.append('/home/bridge/nd20983/ummodel/data/'+DataArray[i]+'/climate/'
-#                   + DataArray[i]+'a.pdclann.nc')
+for i in range(nsims):
+    lsm_low_loc.append('/home/bridge/nd20983/paleogeogs/LOW_RES/'+geo_stages[i]+'.nc')
+    lsm_high_loc.append('/home/bridge/nd20983/paleogeogs/'+geo_stages[i]+'.nc')
+    sim_loc.append('/home/bridge/nd20983/ummodel/data/'+DataArray[i]+'/climate/'
+                   + DataArray[i]+'a.pdclann.nc')
 lsm_low, lsm_high = [], []
 topo_low, topo_high = [], []
 lon_constant = 96
@@ -146,16 +144,15 @@ make_mapplots = [True, True, False, True, True, False, False, True, True]
 # ===============================================================================
 # LOAD LAND SEA MASKS
 # ===============================================================================
-home = 'C:/Users/nd20983/OneDrive - University of Bristol/Documents/Simulations/data/rawdata/'
-local_loc = ['xpgxaa.pdclann.nc', 'xpgxwa.pdclann.nc']
-for m in range(2):
+
+
+for m in range(nsims):
     ebm_dict[DataArray[m]] = {}
-#    data_lsm_low = nc.Dataset(lsm_low_loc[m], mode='r')
+    data_lsm_low = nc.Dataset(lsm_low_loc[m], mode='r')
 # Note the lsm does not hold variables 'longitude' and 'latitude'
 #    lons_lsm[m], lats_lsm[m] = np.meshgrid(lsm_low[m]['longitude'],
 #                                           lsm_low[m]['latitude'])
-#    data_sim = nc.Dataset(sim_loc[m], mode='r')
-    data_sim = nc.Dataset(home+local_loc[m], mode='r')
+    data_sim = nc.Dataset(sim_loc[m], mode='r')
 # ===============================================================================
 # read basic variables
 # ===============================================================================
@@ -225,10 +222,10 @@ for m in range(2):
 # ===============================================================================
 # make some difference plots
 # ===============================================================================
-    for mm in range(2):
+    for mm in range(nsims):
         if mm != m:
             ebm_dict[DataArray[m]][DataArray[mm]] = {}
-            data_sim2 = nc.Dataset(home+local_loc[mm], mode='r')
+            data_sim2 = nc.Dataset(sim_loc[mm], mode='r')
             sim_dict2 = var_dict2
 
             var_dict2['ts'] = data_sim2.variables[varname[0]][:]-273.15
@@ -326,7 +323,7 @@ for m in range(2):
             ebm_dict[DataArray[m]][DataArray[mm]][ebmvar_name[6]] = -(tempebm2albt1-tempebm2+tempebm2emmi1-tempebm2+tempebm2htra1-tempebm2+tempebm2sola1-tempebm2)
             ebm_dict[DataArray[m]][DataArray[mm]][ebmvar_name[7]] = -(tempebm2albs1-tempebm2)
             ebm_dict[DataArray[m]][DataArray[mm]][ebmvar_name[8]] = -(tempebm2albt1-tempebm2albs1)
-
+            
             ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[0]] = -(lpw_temp1-lpw_temp2)
             ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[1]] = -(lpw_tempebm1-lpw_tempebm2)
             ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[2]] = -(lpw_tempebm2albt1-lpw_tempebm2)
@@ -336,7 +333,7 @@ for m in range(2):
             ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[6]] = -(lpw_tempebm2albt1-lpw_tempebm2+lpw_tempebm2emmi1-lpw_tempebm2+lpw_tempebm2htra1-lpw_tempebm2+lpw_tempebm2sola1-lpw_tempebm2)
             ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[7]] = -(lpw_tempebm2albs1-lpw_tempebm2)
             ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[8]] = -(lpw_tempebm2albt1-lpw_tempebm2albs1)
-
+            
             for i in range(len(ebmvar_name)):
                 ebm_dict[DataArray[m]][DataArray[mm]][ebmvarllpw_name[i]] = ma.masked_array(ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[i]],
                                                                                             mask = ma.getmask(lats_l)
@@ -352,35 +349,40 @@ for m in range(2):
 # now close the data read
     data_sim2.close()
 data_sim.close()
-#data_lsm_low.close()
-# Now make the plots!
+data_lsm_low.close()
+
+# Get some plots
 for m in range(2):
     fignameano = DataArray[m]
     figano = plt.figure(num=fignameano, figsize=(18, 12), dpi=200)
     colors_plot = ['k', 'green', 'k', 'blue', 'purple', 'k', 'k', 'r', 'yellow']
-    for mm in range(2):
+    for mm in range(nsims):
         if mm != m:
-            ax = figano.add_subplot(3, 3, mm+1)
+            ax = figano.add_subplot(3,3,mm+1)
             for p in range(nsims):
                 if make_mapplots[p]:
                     var_plots[p] = ax.plot(ebm_dict[DataArray[m]]['zmlats'], ebm_dict[DataArray[m]][DataArray[mm]][ebmvar_name[p]],
                                            label=ebmvar_name[p], color=colors_plot[p], linewidth=0.8, linestyle='--')
+#                    var_plots[p] = ax.plot(ebm_dict[DataArray[m]]['zmlats'], ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[p]],
+#                                           label=ebmvar_name[p], color=colors_plot[p], linewidth=0.8, linestyle='--')
                 else:
                     pass
-            ax.set_title(DataArray[mm]+'-'+DataArray[m]+' EBM')
+            ax.set_title(DataArray[mm]+'-'+DataArray[m]+' surface temperature differences')
             ax.set_xlabel('latitude', fontsize=8)
             ax.set_ylabel('surface temperature difference (degreeC)', fontsize=8)
             ax.set_xlim(-90, 90)
-            ax.set_ylim(-20, 20)
+            ax.set_ylim(-25, 25)
+            
             ax.set_xticks([-60, -30, 0, 30, 60])
             ax.xaxis.set_minor_locator(MultipleLocator(10))
             ax.yaxis.set_major_locator(MultipleLocator(10))
             ax.yaxis.set_minor_locator(MultipleLocator(1))
-            ax.tick_params(axis='x', which='major', direction='in', right=True, length=4, width=1, labelsize=6)
-            ax.tick_params(axis='x', which='minor', direction='in', right=True, length=2, width=1, labelsize=6)
+            ax.tick_params(axis='x', which='major', direction='in', right=True, length=3, width=1, labelsize=6)
+            ax.tick_params(axis='x', which='minor', direction='in', right=True, length=1.5, width=1, labelsize=6)
             ax.tick_params(axis='y', which='major', direction='in', right=True, length=3, width=1, labelsize=6)
             ax.tick_params(axis='y', which='minor', direction='in', right=True, length=1.5, width=1, labelsize=6)
-            ax.legend(loc='upper right', fontsize=6)
+            ax.legend(loc='upper center', bbox_to_anchor=(0.3, 0.6, 0.4, 0.35), edgecolor='none', fontsize=6)
+    suptitle = plt.suptitle('EBM '+'_expts-'+DataArray[m], y=1.02, fontsize=12)
     plt.tight_layout()
     plt.show()
-#    figano.savefig('EBM'+'_expts-'+DataArray[m]+'.png', format='png', dpi=800)
+#    figano.savefig('/home/bridge/nd20983/plot/EBM/test/EBM_'+'_expts-'+DataArray[m]+'.eps', format='eps', dpi=1200)
