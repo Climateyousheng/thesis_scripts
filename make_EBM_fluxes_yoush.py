@@ -6,6 +6,7 @@
 # ====================================================================
 
 import numpy as np
+import numpy.ma as ma
 import pandas as pd
 import netCDF4 as nc
 import matplotlib.pyplot as plt
@@ -132,6 +133,11 @@ for i in range(lat_constant):
     weight_lat_temp.append(-(np.sin(latsedge_m[i+1]*2*np.pi/360.0) - np.sin(latsedge_m[i]*2*np.pi/360.0)))
 for i in range(lat_constant):
     weight_lat.append(weight_lat_temp[i]/sum(weight_lat_temp))
+
+# Get the mask for different zones
+lats_hs = ma.masked_greater(lats_m, -60)
+lats_hn = ma.masked_less(lats_m, 60)
+lats_l = ma.masked_outside(lats_m, -30, 30)
 
 # Define what's in the plots
 make_mapplots = [True, True, False, True, True, False, False, True, True]
@@ -330,6 +336,17 @@ for m in range(2):
             ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[6]] = -(lpw_tempebm2albt1-lpw_tempebm2+lpw_tempebm2emmi1-lpw_tempebm2+lpw_tempebm2htra1-lpw_tempebm2+lpw_tempebm2sola1-lpw_tempebm2)
             ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[7]] = -(lpw_tempebm2albs1-lpw_tempebm2)
             ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[8]] = -(lpw_tempebm2albt1-lpw_tempebm2albs1)
+
+            for i in range(len(ebmvar_name)):
+                ebm_dict[DataArray[m]][DataArray[mm]][ebmvarllpw_name[i]] = ma.masked_array(ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[i]],
+                                                                                            mask = ma.getmask(lats_l)
+                                                                                            )
+                ebm_dict[DataArray[m]][DataArray[mm]][ebmvarhnlpw_name[i]] = ma.masked_array(ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[i]],
+                                                                                            mask = ma.getmask(lats_hn)
+                                                                                            )
+                ebm_dict[DataArray[m]][DataArray[mm]][ebmvarhslpw_name[i]] = ma.masked_array(ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[i]],
+                                                                                            mask = ma.getmask(lats_hs)
+                                                                                            )
         else:
             pass
 # now close the data read
@@ -366,4 +383,4 @@ for m in range(2):
             ax.legend(loc='upper right', fontsize=6)
     plt.tight_layout()
     plt.show()
-    figano.savefig('EBM'+DataArray[mm]+'-'+DataArray[m]+'.png', format='png', dpi=800)
+#    figano.savefig('EBM'+'_expts-'+DataArray[m]+'.png', format='png', dpi=800)
