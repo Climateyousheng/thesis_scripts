@@ -1,6 +1,8 @@
 # This is the python version of energy balance model
-# original script of Dan's here:
+# original script of Dan's is here:
 # /home/bridge/ggdjl/ggdjl/bas/doc/eocene_deepmip/analysis/fluxes.pro
+# Simplified version of Alex's is here:
+# /home/bridge/nd20983/scripts/make_EBM_fluxes_alex.pro
 # ====================================================================
 # ENERGY BALANCE MODEL
 # ====================================================================
@@ -351,38 +353,46 @@ for m in range(nsims):
 data_sim.close()
 data_lsm_low.close()
 
-# Get some plots
-for m in range(2):
+# Now make the plots!
+for m in range(nsims):
     fignameano = DataArray[m]
-    figano = plt.figure(num=fignameano, figsize=(18, 12), dpi=200)
-    colors_plot = ['k', 'green', 'k', 'blue', 'purple', 'k', 'k', 'r', 'yellow']
+    figano = plt.figure(num=fignameano, figsize=(18, 12))
+    colors_plot = ['k', 'green', 'k', 'blue', 'purple', 'k', 'k', 'r', 'cyan']
     for mm in range(nsims):
         if mm != m:
-            ax = figano.add_subplot(3,3,mm+1)
+            ax = figano.add_subplot(3, 3, mm+1)
+            textslpw, textsllpw, textshnlpw, textshslpw = [], [], [], []
             for p in range(nsims):
                 if make_mapplots[p]:
                     var_plots[p] = ax.plot(ebm_dict[DataArray[m]]['zmlats'], ebm_dict[DataArray[m]][DataArray[mm]][ebmvar_name[p]],
                                            label=ebmvar_name[p], color=colors_plot[p], linewidth=0.8, linestyle='--')
-#                    var_plots[p] = ax.plot(ebm_dict[DataArray[m]]['zmlats'], ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[p]],
-#                                           label=ebmvar_name[p], color=colors_plot[p], linewidth=0.8, linestyle='--')
+                    textslpw.append(ma.sum(ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[p]]))
+                    textsllpw.append(ma.sum(ebm_dict[DataArray[m]][DataArray[mm]][ebmvarllpw_name[p]]))
+                    textshnlpw.append(ma.sum(ebm_dict[DataArray[m]][DataArray[mm]][ebmvarhnlpw_name[p]]))
+                    textshslpw.append(ma.sum(ebm_dict[DataArray[m]][DataArray[mm]][ebmvarhslpw_name[p]]))
                 else:
                     pass
-            ax.set_title(DataArray[mm]+'-'+DataArray[m]+' surface temperature differences')
+            textslpw_ = np.round(textslpw, decimals=2)
+            ax.set_title(DataArray[mm]+'-'+DataArray[m]+' EBM')
             ax.set_xlabel('latitude', fontsize=8)
             ax.set_ylabel('surface temperature difference (degreeC)', fontsize=8)
             ax.set_xlim(-90, 90)
             ax.set_ylim(-25, 25)
-            
             ax.set_xticks([-60, -30, 0, 30, 60])
             ax.xaxis.set_minor_locator(MultipleLocator(10))
             ax.yaxis.set_major_locator(MultipleLocator(10))
             ax.yaxis.set_minor_locator(MultipleLocator(1))
-            ax.tick_params(axis='x', which='major', direction='in', right=True, length=3, width=1, labelsize=6)
-            ax.tick_params(axis='x', which='minor', direction='in', right=True, length=1.5, width=1, labelsize=6)
+            ax.tick_params(axis='x', which='major', direction='in', right=True, length=4, width=1, labelsize=6)
+            ax.tick_params(axis='x', which='minor', direction='in', right=True, length=2, width=1, labelsize=6)
             ax.tick_params(axis='y', which='major', direction='in', right=True, length=3, width=1, labelsize=6)
             ax.tick_params(axis='y', which='minor', direction='in', right=True, length=1.5, width=1, labelsize=6)
-            ax.legend(loc='upper center', bbox_to_anchor=(0.3, 0.6, 0.4, 0.35), edgecolor='none', fontsize=6)
-    suptitle = plt.suptitle('EBM '+'_expts-'+DataArray[m], y=1.02, fontsize=12)
-    plt.tight_layout()
+            legend = ax.legend(loc='center', bbox_to_anchor=(0.3, 0.6, 0.4, 0.35), edgecolor='w', fontsize=6)
+            ax.add_artist(legend)
+            ax.legend(loc='center', handlelength=0, handletextpad=0, bbox_to_anchor=(0.7, 0.6, 0.1, 0.35), 
+	              edgecolor='w', labels=textslpw_, fontsize=6)
+        else:
+            pass
+    #suptitle = plt.suptitle('EBM'+'_expts-'+DataArray[m], y=1.02, fontsize=12)
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
     plt.show()
-#    figano.savefig('/home/bridge/nd20983/plot/EBM/test/EBM_'+'_expts-'+DataArray[m]+'.eps', format='eps', dpi=1200)
+    #figano.savefig('/home/bridge/nd20983/plot/EBM/test/EBM_'+'expts-'+DataArray[m]+'.eps', format='eps', dpi=1200)
