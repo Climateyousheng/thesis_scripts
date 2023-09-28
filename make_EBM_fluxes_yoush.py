@@ -396,3 +396,4 @@ for m in range(nsims):
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
     plt.show()
     #figano.savefig('/home/bridge/nd20983/plot/EBM/test/EBM_'+'expts-'+DataArray[m]+'.eps', format='eps', dpi=1200)
+    figano.savefig('/home/bridge/nd20983/plot/EBM/test/EBM_'+'expts-'+DataArray[m]+'.png', format='png', dpi=800)
