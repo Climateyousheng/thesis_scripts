@@ -401,14 +401,26 @@ for m in range(1):
 			ax.tick_params(axis='x', which='minor', direction='in', right=True, length=2, width=1, labelsize=6)
 			ax.tick_params(axis='y', which='major', direction='in', right=True, length=3, width=1, labelsize=6)
 			ax.tick_params(axis='y', which='minor', direction='in', right=True, length=1.5, width=1, labelsize=6)
-			legend = ax.legend(loc='center', bbox_to_anchor=(0.3, 0.6, 0.4, 0.35), edgecolor='w', fontsize=6)
+			legend = ax.legend(loc='center', bbox_to_anchor=(0.15, 0.6, 0.4, 0.35), edgecolor='w', fontsize=6)
 			ax.add_artist(legend)
-			ax.legend(loc='center', handlelength=0, handletextpad=0, bbox_to_anchor=(0.7, 0.6, 0.1, 0.35), 
-				  edgecolor='w', labels=textslpw_, fontsize=6)
+			legend1 = ax.legend(loc='center', handlelength=0, handletextpad=0, bbox_to_anchor=(0.5, 0.6, 0.1, 0.35),
+						edgecolor='w', labels=textslpw_, fontsize=6)
+			ax.add_artist(legend1)
+			legend2 = ax.legend(loc='center', handlelength=0, handletextpad=0, bbox_to_anchor=(0.6, 0.6, 0.1, 0.35),
+						edgecolor='w', labels=textsllpw_, fontsize=6)
+			ax.add_artist(legend2)
+			legend3 = ax.legend(loc='center', handlelength=0, handletextpad=0, bbox_to_anchor=(0.7, 0.6, 0.1, 0.35),
+						edgecolor='w', labels=textshnlpw_, fontsize=6)
+			ax.add_artist(legend3)
+			legend4 = ax.legend(loc='center', handlelength=0, handletextpad=0, bbox_to_anchor=(0.8, 0.6, 0.1, 0.35),
+						edgecolor='w', labels=textshslpw_, fontsize=6)
+			ax.add_artist(legend4)
+			legend5 = ax.legend(loc='center', handlelength=0, handletextpad=0, bbox_to_anchor=(0.9, 0.6, 0.1, 0.35),
+						edgecolor='w', labels=textsmlpw_, fontsize=6)
 		else:
 			pass
 	#suptitle = plt.suptitle('EBM'+'_expts-'+DataArray[m+12], y=1.02, fontsize=12)
 	plt.tight_layout(rect=[0, 0.03, 1, 0.95])
 	plt.show()
 	#figano.savefig('/home/bridge/nd20983/plot/EBM/test/EBM_'+'expts-'+DataArray[m]+'.eps', format='eps', dpi=1200)
-	figano.savefig('/home/bridge/nd20983/plots/EBM/test12sim/EBM_'+'expts-'+DataArray[m]+'.png', format='png', dpi=800)
+	figano.savefig('/home/bridge/nd20983/plots/EBM/test12sim/EBM_'+'expts-'+DataArray[m+12]+'plus.png', format='png', dpi=800)
