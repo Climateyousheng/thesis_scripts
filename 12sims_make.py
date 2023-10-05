@@ -21,12 +21,12 @@ import math
 sigma = 5.67e-8
 # dataarrays for simulations
 nmodel = 1
-nsims = 12
+nsims = 13
 model_name = ['HadCM3BL']
 #DataArray = ['xpeca1', 'xpecb1', 'xpecc1', 'xpgxa', 'xpgxb', 'xpgxc', 'xphaa',
 #             'xphab', 'xphac']
 DataArray = ['xpeca1', 'xpecb1', 'xpecc1', 'tflha', 'xpgxa', 'xpgxb', 'xpgxc',
-             'tflhc', 'xphaa', 'xphab', 'xphac', 'tflhd']
+             'tflhc', 'xphaa', 'xphab', 'xphac', 'tflhd', 'tdezb1']
 #geo_stages = ['ser_get', 'ser_get', 'ser_get', 'ser_sco', 'ser_sco', 'ser_sco',
 #              'ser_robo', 'ser_robo', 'ser_robo']
 geo_stages = ['ser_get', 'ser_sco', 'ser_robo', 'ser_hero', 'ser_get', 'ser_sco',
@@ -183,7 +183,7 @@ for m in range(nsims):
 # ===============================================================================
     var_dict['tsm'] = var_dict['ts']
     var_dict['tsd'] = (var_dict['rlus']/sigma)**(0.25)-273.15
-    var_dict['als'] = var_dict['rlds']/var_dict['rsds']
+    var_dict['als'] = var_dict['rsus']/var_dict['rsds']
     var_dict['alt'] = var_dict['rsut']/var_dict['rsdt']
     var_dict['emm'] = var_dict['rlut']/var_dict['rlus']
     var_dict['htr'] = var_dict['rlut']+var_dict['rsut']-var_dict['rsdt']
@@ -199,10 +199,11 @@ for m in range(nsims):
     var_dict['zmrsdt'] = np.mean(var_dict['rsdt'][0, 0, :, :], axis=1)
     var_dict['zmrlut'] = np.mean(var_dict['rlut'][0, 0, :, :], axis=1)
     var_dict['zmrlus'] = np.mean(var_dict['rlus'][0, 0, :, :], axis=1)
+    var_dict['zmrsus'] = np.mean(var_dict['rsus'][0, 0, :, :], axis=1)
 
     var_dict['zmtsm'] = (var_dict['zmts'])
     var_dict['zmtsd'] = (var_dict['zmrlus']/sigma)**(0.25)-273.15
-    var_dict['zmals'] = (var_dict['zmrlds'])/(var_dict['zmrsds'])
+    var_dict['zmals'] = (var_dict['zmrsus'])/(var_dict['zmrsds'])
     var_dict['zmalt'] = (var_dict['zmrsut'])/(var_dict['zmrsdt'])
     var_dict['zmemm'] = (var_dict['zmrlut'])/(var_dict['zmrlus'])
     var_dict['zmhtr'] = (var_dict['zmrlut'])+\
@@ -252,7 +253,7 @@ for m in range(nsims):
 
             var_dict2['tsm'] = var_dict2['ts']
             var_dict2['tsd'] = (var_dict2['rlus']/sigma)**(0.25)-273.15
-            var_dict2['als'] = var_dict2['rlds']/var_dict2['rsds']
+            var_dict2['als'] = var_dict2['rsus']/var_dict2['rsds']
             var_dict2['alt'] = var_dict2['rsut']/var_dict2['rsdt']
             var_dict2['emm'] = var_dict2['rlut']/var_dict2['rlus']
             var_dict2['htr'] = var_dict2['rlut']+var_dict2['rsut']-var_dict2['rsdt']
@@ -265,10 +266,11 @@ for m in range(nsims):
             var_dict2['zmrsdt'] = np.mean(var_dict2['rsdt'][0, 0, :, :], axis=1)
             var_dict2['zmrlut'] = np.mean(var_dict2['rlut'][0, 0, :, :], axis=1)
             var_dict2['zmrlus'] = np.mean(var_dict2['rlus'][0, 0, :, :], axis=1)
+	    var_dict2['zmrsus'] = np.mean(var_dict2['rsus'][0, 0, :, :], axis=1)
 
             var_dict2['zmtsm'] = (var_dict2['zmts'])
             var_dict2['zmtsd'] = (var_dict2['zmrlus']/sigma)**(0.25)-273.15
-            var_dict2['zmals'] = (var_dict2['zmrlds'])/(var_dict2['zmrsds'])
+            var_dict2['zmals'] = (var_dict2['zmrsus'])/(var_dict2['zmrsds'])
             var_dict2['zmalt'] = (var_dict2['zmrsut'])/(var_dict2['zmrsdt'])
             var_dict2['zmemm'] = (var_dict2['zmrlut'])/(var_dict2['zmrlus'])
             var_dict2['zmhtr'] = (var_dict2['zmrlut'])+\
@@ -363,26 +365,30 @@ data_sim.close()
 #data_lsm_low.close()
 
 # Now make the plots!
-for m in range(nsims):
-    fignameano = DataArray[m]
+for m in range(1):
+    fignameano = DataArray[m+12]
     figano = plt.figure(num=fignameano, figsize=(18, 12))
     colors_plot = ['k', 'green', 'k', 'blue', 'purple', 'k', 'k', 'r', 'cyan']
     for mm in range(nsims):
-        if mm != m:
+        if mm != m+12 and mm<12:
             ax = figano.add_subplot(3, 4, mm+1)
-            textslpw, textsllpw, textshnlpw, textshslpw = [], [], [], []
+            textslpw, textsllpw, textshnlpw, textshslpw, textsmlpw = [], [], [], [], []
             for p in range(len(make_mapplots)):
                 if make_mapplots[p]:
-                    var_plots[p] = ax.plot(ebm_dict[DataArray[m]]['zmlats'], ebm_dict[DataArray[m]][DataArray[mm]][ebmvar_name[p]],
+                    var_plots[p] = ax.plot(ebm_dict[DataArray[m+12]]['zmlats'], ebm_dict[DataArray[m]][DataArray[mm]][ebmvar_name[p]],
                                            label=ebmvar_name[p], color=colors_plot[p], linewidth=0.8, linestyle='--')
-                    textslpw.append(ma.sum(ebm_dict[DataArray[m]][DataArray[mm]][ebmvarlpw_name[p]]))
-                    textsllpw.append(ma.sum(ebm_dict[DataArray[m]][DataArray[mm]][ebmvarllpw_name[p]]))
-                    textshnlpw.append(ma.sum(ebm_dict[DataArray[m]][DataArray[mm]][ebmvarhnlpw_name[p]]))
-                    textshslpw.append(ma.sum(ebm_dict[DataArray[m]][DataArray[mm]][ebmvarhslpw_name[p]]))
+                    textslpw.append(ma.sum(ebm_dict[DataArray[m+12]][DataArray[mm]][ebmvarlpw_name[p]]))
+                    textsllpw.append(ma.sum(ebm_dict[DataArray[m+12]][DataArray[mm]][ebmvarllpw_name[p]]))
+                    textshnlpw.append(ma.sum(ebm_dict[DataArray[m+12]][DataArray[mm]][ebmvarhnlpw_name[p]]))
+                    textshslpw.append(ma.sum(ebm_dict[DataArray[m+12]][DataArray[mm]][ebmvarhslpw_name[p]]))
                 else:
                     pass
             textslpw_ = np.round(textslpw, decimals=2)
-            ax.set_title(DataArray[mm]+'-'+DataArray[m]+' EBM')
+	    textsllpw_ = np.round(textsllpw, decimals=2)
+            textshnlpw_ = np.round(textshnlpw, decimals=2)
+            textshslpw_ = np.round(textshslpw, decimals=2)
+            textsmlpw_ = np.round(textslpw_-textsllpw_-textshnlpw_-textshslpw_, decimals=2)
+            ax.set_title(DataArray[mm]+'-'+DataArray[m+12]+' EBM')
             ax.set_xlabel('latitude', fontsize=8)
             ax.set_ylabel('surface temperature difference (degreeC)', fontsize=8)
             ax.set_xlim(-90, 90)
@@ -401,7 +407,7 @@ for m in range(nsims):
 	              edgecolor='w', labels=textslpw_, fontsize=6)
         else:
             pass
-    #suptitle = plt.suptitle('EBM'+'_expts-'+DataArray[m], y=1.02, fontsize=12)
+    #suptitle = plt.suptitle('EBM'+'_expts-'+DataArray[m+12], y=1.02, fontsize=12)
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
     plt.show()
     #figano.savefig('/home/bridge/nd20983/plot/EBM/test/EBM_'+'expts-'+DataArray[m]+'.eps', format='eps', dpi=1200)
