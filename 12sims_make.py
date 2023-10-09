@@ -1,3 +1,4 @@
+# This is a good version to create the anomalies to the PI control expt.
 # This is the python version of energy balance model
 # original script of Dan's is here:
 # /home/bridge/ggdjl/ggdjl/bas/doc/eocene_deepmip/analysis/fluxes.pro
@@ -363,8 +364,18 @@ for m in range(nsims):
 	data_sim2.close()
 data_sim.close()
 #data_lsm_low.close()
+#========================================================================================================
+# Test here.
+#========================================================================================================
+df_test = pd.DataFrame(ebm_dict)
+df_test.to_excel('/home/bridge/nd20983/test/test.xlsx')
 #
 # Now make the plots!
+# define plotting styles
+#colors_plot = ['k', 'green', 'k', 'blue', 'purple', 'k', 'k', 'r', 'cyan']
+colors_plot = ['green', 'k', 'k', 'blue', 'orange', 'k', 'k', 'r', 'cyan']
+linestyle_list = ['dotted', 'solid', 'dotted', 'solid', 'solid', 'dotted', 'dotted', 'solid', 'dashed']
+linewidth_list = [0.5, 1.0, 0.1, 0.5, 0.8, 0.1, 0.1, 1.0, 0.8]
 for m in range(1):
 	fignameano = DataArray[m+12]
 	figano = plt.figure(num=fignameano, figsize=(18, 12))
@@ -376,7 +387,7 @@ for m in range(1):
 			for p in range(len(make_mapplots)):
 				if make_mapplots[p]:
 					var_plots[p] = ax.plot(ebm_dict[DataArray[m+12]]['zmlats'], ebm_dict[DataArray[m+12]][DataArray[mm]][ebmvar_name[p]],
-										   label=ebmvar_name[p], color=colors_plot[p], linewidth=0.8, linestyle='--')
+										   label=ebmvar_name[p], color=colors_plot[p], linewidth=linewidth_list[p], linestyle=linestyle_list[p])
 					textslpw.append(ma.sum(ebm_dict[DataArray[m+12]][DataArray[mm]][ebmvarlpw_name[p]]))
 					textsllpw.append(ma.sum(ebm_dict[DataArray[m+12]][DataArray[mm]][ebmvarllpw_name[p]]))
 					textshnlpw.append(ma.sum(ebm_dict[DataArray[m+12]][DataArray[mm]][ebmvarhnlpw_name[p]]))
@@ -392,7 +403,7 @@ for m in range(1):
 			ax.set_xlabel('latitude', fontsize=8)
 			ax.set_ylabel('surface temperature difference (degreeC)', fontsize=8)
 			ax.set_xlim(-90, 90)
-			ax.set_ylim(-5, 25)
+			ax.set_ylim(-5, 20)
 			ax.set_xticks([-60, -30, 0, 30, 60])
 			ax.xaxis.set_minor_locator(MultipleLocator(10))
 			ax.yaxis.set_major_locator(MultipleLocator(10))
@@ -401,11 +412,11 @@ for m in range(1):
 			ax.tick_params(axis='x', which='minor', direction='in', right=True, length=2, width=1, labelsize=6)
 			ax.tick_params(axis='y', which='major', direction='in', right=True, length=3, width=1, labelsize=6)
 			ax.tick_params(axis='y', which='minor', direction='in', right=True, length=1.5, width=1, labelsize=6)
-			legend = ax.legend(loc='center', bbox_to_anchor=(0.15, 0.6, 0.4, 0.35), edgecolor='w', fontsize=6)
+			legend = ax.legend(loc='center', bbox_to_anchor=(0.3, 0.6, 0.4, 0.35), edgecolor='w', fontsize=6, framealpha=0.3)
 			ax.add_artist(legend)
-			legend1 = ax.legend(loc='center', handlelength=0, handletextpad=0, bbox_to_anchor=(0.5, 0.6, 0.1, 0.35),
-						edgecolor='w', labels=textslpw_, fontsize=6)
-			ax.add_artist(legend1)
+			legend1 = ax.legend(loc='center', handlelength=0, handletextpad=0, bbox_to_anchor=(0.7, 0.6, 0.1, 0.35),
+						edgecolor='w', labels=textslpw_, fontsize=6, framealpha=0.3)
+			"""ax.add_artist(legend1)
 			legend2 = ax.legend(loc='center', handlelength=0, handletextpad=0, bbox_to_anchor=(0.6, 0.6, 0.1, 0.35),
 						edgecolor='w', labels=textsllpw_, fontsize=6)
 			ax.add_artist(legend2)
@@ -416,11 +427,11 @@ for m in range(1):
 						edgecolor='w', labels=textshslpw_, fontsize=6)
 			ax.add_artist(legend4)
 			legend5 = ax.legend(loc='center', handlelength=0, handletextpad=0, bbox_to_anchor=(0.9, 0.6, 0.1, 0.35),
-						edgecolor='w', labels=textsmlpw_, fontsize=6)
+						edgecolor='w', labels=textsmlpw_, fontsize=6)"""
 		else:
 			pass
 	#suptitle = plt.suptitle('EBM'+'_expts-'+DataArray[m+12], y=1.02, fontsize=12)
 	plt.tight_layout(rect=[0, 0.03, 1, 0.95])
 	plt.show()
 	#figano.savefig('/home/bridge/nd20983/plot/EBM/test/EBM_'+'expts-'+DataArray[m]+'.eps', format='eps', dpi=1200)
-	figano.savefig('/home/bridge/nd20983/plots/EBM/test12sim/EBM_'+'expts-'+DataArray[m+12]+'plus.png', format='png', dpi=800)
+	#figano.savefig('/home/bridge/nd20983/plots/EBM/EBM_'+'expts-'+DataArray[m+12]+'plus.png', format='png', dpi=800)
