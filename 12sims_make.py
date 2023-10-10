@@ -364,18 +364,40 @@ for m in range(nsims):
 	data_sim2.close()
 data_sim.close()
 #data_lsm_low.close()
-#========================================================================================================
-# Test here.
-#========================================================================================================
-df_test = pd.DataFrame(ebm_dict)
-df_test.to_excel('/home/bridge/nd20983/test/test.xlsx')
 #
+#========================================================================================================
+# Convert the outputs to an xlsx file.
+#========================================================================================================
+dict_out = {}
+lst_zones = ['global', 'llat', 'hnlat', 'hslat', 'mlat']
+ds_tdezb1 = ebm_dict['tdezb1']
+for i in DataArray:
+	if i!='tdezb1':
+		ds_i = ds_tdezb1[i]
+		for j in range(len(lst_zones)):
+			dict_out[(i,lst_zones[j])] = {}
+		for p in range(len(make_mapplots)):
+			if make_mapplots[p]:
+				dict_out[(i,lst_zones[0])][ebmvar_name[p]] = ma.sum(ds_i[ebmvarlpw_name[p]])
+				dict_out[(i,lst_zones[1])][ebmvar_name[p]] = ma.sum(ds_i[ebmvarllpw_name[p]])
+				dict_out[(i,lst_zones[2])][ebmvar_name[p]] = ma.sum(ds_i[ebmvarhnlpw_name[p]])
+				dict_out[(i,lst_zones[3])][ebmvar_name[p]] = ma.sum(ds_i[ebmvarhslpw_name[p]])
+				dict_out[(i,lst_zones[4])][ebmvar_name[p]] = dict_out[(i,lst_zones[0])][ebmvar_name[p]]-\
+					dict_out[(i,lst_zones[1])][ebmvar_name[p]]-dict_out[(i,lst_zones[2])][ebmvar_name[p]]-\
+					dict_out[(i,lst_zones[3])][ebmvar_name[p]]
+df_output = pd.DataFrame.from_dict(dict_out)
+df_output.to_excel('/home/bridge/nd20983/plots/EBM/EBM-PI_data.xlsx')
+#with pd.ExcelWriter('/home/bridge/nd20983/plots/EBM/EBM-PI_data.xlsx') as writer:
+#	df.to_excel(writer, sheet_name='sheet1')
+#	df2.to_excel(writer, sheet_name='sheet2')
+#========================================================================================================
 # Now make the plots!
+#========================================================================================================
 # define plotting styles
 #colors_plot = ['k', 'green', 'k', 'blue', 'purple', 'k', 'k', 'r', 'cyan']
-colors_plot = ['green', 'k', 'k', 'blue', 'orange', 'k', 'k', 'r', 'cyan']
+colors_plot = ['green', 'k', 'k', 'blue', 'purple', 'k', 'k', 'r', 'cyan']
 linestyle_list = ['dotted', 'solid', 'dotted', 'solid', 'solid', 'dotted', 'dotted', 'solid', 'dashed']
-linewidth_list = [0.5, 1.0, 0.1, 0.5, 0.8, 0.1, 0.1, 1.0, 0.8]
+linewidth_list = [0.5, 1.0, 0.1, 0.5, 0.5, 0.1, 0.1, 1.0, 0.8]
 for m in range(1):
 	fignameano = DataArray[m+12]
 	figano = plt.figure(num=fignameano, figsize=(18, 12))
