@@ -1,4 +1,5 @@
-# thesis-global_climate
+# We aim to add all relevant scripts to this repo. Local copy sits under:$~/docs/scripts/scripts_thesis
+# Current, mostly for thesis-global_climate.
 This is a fit version for local laptops with all the locals file readable.
 
 We'll put the eocene solid version here and make further changes.
