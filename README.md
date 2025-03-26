@@ -1,3 +1,6 @@
+
+# thesis-global_climate
+
 # We aim to add all relevant scripts to this repo. 
 
 Local copy sits under:`~/docs/scripts/scripts_thesis`
