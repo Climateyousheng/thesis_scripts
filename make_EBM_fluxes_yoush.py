@@ -1,9 +1,9 @@
 # This is a good version to create the anomalies to the PI control expt.
 # This is the python version of energy balance model
 # original script of Dan's is here:
-# /home/bridge/ggdjl/ggdjl/bas/doc/eocene_deepmip/analysis/fluxes.pro
+# eocene:/home/bridge/ggdjl/ggdjl/bas/doc/eocene_deepmip/analysis/fluxes.pro
 # Simplified version of Alex's is here:
-# /home/bridge/nd20983/scripts/make_EBM_fluxes_alex.pro
+# eocene:/home/bridge/nd20983/scripts/make_EBM_fluxes_alex.pro
 # ====================================================================
 # ENERGY BALANCE MODEL
 # ====================================================================
