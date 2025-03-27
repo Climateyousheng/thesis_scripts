@@ -85,7 +85,7 @@ ax0.text(x=800, y=14, s='GET_CTR')
 ax0.text(x=865, y=12.5, s='GET_TP')
 ax0.text(x=800, y=11, s='GET_AD')
 ax0.text(x=900, y=6.0, s='GET_RC')
-ax0.text(x=400, y=4.0, s='SCO_CTR')
+ax0.text(x=400, y=5.0, s='SCO_CTR')
 ax0.text(x=925, y=3.2, s='ROB_CTR')
 ax0.text(x=400, y=1.4, s='GET_LC')
 ax0.text(x=600, y=1.0, s='GET_LC1x')
@@ -95,9 +95,9 @@ ax0.text(x=800, y=1.0, s='GET_HF')
 ax0.axhline(y=17.9, color='orange', linewidth=1)
 # add rectangles for different groups
 rects = [
-    (180, 1.5, 200, 2),
-    (180, 7.0, 200, 2),
-    (180, 15., 200, 2)
+    (180, 1.5, 200, 2),     # Low Rockies +
+    (180, 7.0, 200, 2),     # Low Rockies
+    (180, 15., 200, 2),     # High Rockies
     ]
 for x, y, w, h in rects:
     rect = patches.Rectangle((x, y), w, h, linewidth=2, edgecolor='blue',
@@ -188,4 +188,12 @@ pos1_1 = [pos1.x0, pos1.y0, pos1.x1, pos1.y1]
 
 plt.tight_layout()
 plt.show()
+
+path_out = r"C:\Users\nd20983\docs\Paper\THESIS\chapter2_AMOC\figures"
+fileout = 'Fig2_AMOC_time_series'
+filenameout = os.path.abspath(os.path.join(path_out,fileout))
 # plt.savefig('../Simulations/data/figures/AMOC_time_series', dpi=100, bbox_inches='tight', facecolor='w')
+# print(f"Figure saved to {filenameout}")
+# plt.savefig(filenameout, dpi=200,)
+# Note for some reasons, savefig does not work as expected. We used notebook
+# to skip this as figures could be exported manually.
