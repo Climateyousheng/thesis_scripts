@@ -34,5 +34,6 @@ Figure 2 in the AMOC paper (AMOC time series, waterflux bar chart and linear reg
 
 ### 2. Waterflux
 
+To calculate Net freshwater flux, use `waterflux.ipynb` in `local:~/docs/scripts/AMOC`. We are planning to give a simplified version of it under `local:~/docs/scripts/scripts_thesis/freshwater_flux_calculation.py`, another file `local:~/docs/scripts/scripts_thesis/freshwater_test.ipynb` is used to test functionalities. **Work in progress**.
 
 ## Chapter Ocean Biogeochemistry
